@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
 
-class SearchProductScreen extends StatelessWidget {
+class SearchProductScreen extends StatefulWidget {
   const SearchProductScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => SearchProductScreenState();
+}
+
+class SearchProductScreenState extends State<SearchProductScreen> {
+  String selectedSubject = 'Овочі-фрукти';
+
+  List<String> subjects = [
+    'Овочі-фрукти',
+    'Молочна продукція',
+    'М\'яо',
+    'Хліб',
+    'Напої'
+  ];
+
+  RangeValues _sliderValues = const RangeValues(20, 200);
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +38,66 @@ class SearchProductScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            const SizedBox(height: 30.0),
             TextFormField(
-              decoration:
-                  const InputDecoration(labelText: 'Назва товару для пошуку'),
+              decoration: InputDecoration(
+                labelText: 'Назва товару для пошуку',
+                labelStyle: const TextStyle(color: Colors.white),
+                hintText: 'Введіть назву товару для пошуку',
+                hintStyle: TextStyle(color: Colors.grey[300]),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              style: const TextStyle(color: Colors.white),
             ),
-            DropdownButton(
-              items: [], // додайте власні елементи
-              onChanged: (value) {},
+            const SizedBox(height: 30.0),
+            DropdownButton<String>(
+              value: selectedSubject,
+              onChanged: (String? newValue) {
+                setState(() {
+                  if (newValue != null) {
+                    selectedSubject = newValue;
+                  }
+                });
+              },
+              items: subjects.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }).toList(),
+              style: const TextStyle(
+                color: Colors.red,
+              ),
+              dropdownColor: Colors.white30,
             ),
-            Slider(
-              value: 0,
-              onChanged: (value) {},
-              min: 0,
-              max: 100,
+            const SizedBox(height: 60.0),
+            RangeSlider(
+              values: _sliderValues,
+              onChanged: (RangeValues values) {
+                setState(() {
+                  _sliderValues = values;
+                });
+              },
+              labels: RangeLabels(
+                _sliderValues.start.toString(),
+                _sliderValues.end.toString(),
+              ),
+              min: 10,
+              max: 2000,
+              activeColor: Colors.blue, // колір активного діапазону
+              inactiveColor: Colors.grey, // колір неактивного діапазону
             ),
+            const SizedBox(height: 60.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black26,
