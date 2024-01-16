@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'course_work/course_work_main_screen.dart';
 import 'lab_1/lab_1.dart';
 
 class NetworkInformationTechnologiesScreen extends StatelessWidget {
@@ -37,6 +38,21 @@ class NetworkInformationTechnologiesScreen extends StatelessWidget {
                   );
                 },
                 child: const Text('Лабораторна робота № 1'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black26,
+                  elevation: 5.0,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CourseWorkMainScreen()),
+                  );
+                },
+                child: const Text('Курсова робота'),
               ),
             ],
           ),

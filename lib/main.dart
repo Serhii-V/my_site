@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:my_site/security_constants.dart';
 
 import 'network_information_technologies/network_information_technologies_screen.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
-void main() {
+void main() async {
+  await Parse().initialize(
+      SecurityConstants.keyApplicationId, SecurityConstants.keyParseServerUrl,
+      clientKey: SecurityConstants.keyClientKey, debug: true);
+
   runApp(const MyApp());
 }
 
@@ -24,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Мій Веб-сайт для навчання'),
+        title: const Text('Мій Веб-сайт для навчання'),
         backgroundColor: Colors.blueGrey[800],
       ),
       body: Container(
@@ -67,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.black26,
                       elevation: 5.0,
                     ),
-                    child: Text('Навчальна дисципліна 2'),
+                    child: const Text('Навчальна дисципліна 2'),
                   ),
                 ],
               ),
