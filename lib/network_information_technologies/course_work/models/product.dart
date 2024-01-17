@@ -20,10 +20,10 @@ class Product extends Equatable {
   factory Product.fromParseObject(ParseObject parseObject) {
     final objectId = parseObject.get('objectId');
     final productName = parseObject.get('productName');
-    final supplierId = parseObject.get('supplierId');
-    final categoryId = parseObject.get('categoryId');
     final balance = parseObject.get('balance');
     final employeeId = parseObject.get('employeeId');
+    final supplierId = parseObject.get('supplierId');
+    final categoryId = parseObject.get('categoryId');
 
     return Product(
       objectId: objectId,
@@ -35,17 +35,27 @@ class Product extends Equatable {
     );
   }
 
-  ParseObject getParseObject() {
+  ParseObject getAddProductParseObject() {
     final ParseObject parseProduct = ParseObject('Products');
     parseProduct.set('productName', productName);
     parseProduct.set('balance', balance);
+    parseProduct.set('employeeId', employeeId);
+    parseProduct.set('supplierId', supplierId);
+    parseProduct.set('categoryId', categoryId);
+
+    return parseProduct;
+  }
+
+  ParseObject getTransactionParseObject(String productId) {
+    final dateTime = DateTime.now();
+    final ParseObject parseProduct = ParseObject('Transactions');
     parseProduct.addRelation(
         'employeeId', [ParseObject('Employees')..set('objectId', employeeId)]);
     parseProduct.addRelation(
-        'supplierId', [ParseObject('Suppliers')..set('objectId', supplierId)]);
-    parseProduct.addRelation(
-        'categoryId', [ParseObject('Categories')..set('objectId', categoryId)]);
-
+        'productId', [ParseObject('Products')..set('objectId', productId)]);
+    parseProduct.set('amount', balance);
+    parseProduct.set('transactionType', 'receiving');
+    parseProduct.set('transactionDate', dateTime);
     return parseProduct;
   }
 

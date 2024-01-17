@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_site/network_information_technologies/course_work/modeles/employee.dart';
-import 'package:my_site/network_information_technologies/course_work/modeles/product.dart';
-import 'package:my_site/network_information_technologies/course_work/modeles/supplier.dart';
-
-import '../../modeles/categories.dart';
 import 'add_product_bloc.dart';
+
+import '../../models/supplier.dart';
+import '../../models/categories.dart';
+import '../../models/employee.dart';
+import '../../models/product.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key, required this.bloc});
@@ -81,6 +81,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                 controller: productNameController,
                                 decoration: InputDecoration(
                                   labelText: 'Назва продукту',
+                                  hintText: 'Назва продукту',
                                   labelStyle:
                                       const TextStyle(color: Colors.white),
                                   hintStyle: TextStyle(color: Colors.grey[300]),
@@ -91,6 +92,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
+                                style: const TextStyle(color: Colors.white),
                               ),
                               const SizedBox(height: 8),
                               TextField(
@@ -98,6 +100,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'Введіть кількість одиниць',
+                                  hintText: 'Кількість',
                                   labelStyle:
                                       const TextStyle(color: Colors.white),
                                   hintStyle: TextStyle(color: Colors.grey[300]),
@@ -108,6 +111,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
+                                style: const TextStyle(color: Colors.white),
                               ),
                               const SizedBox(height: 8),
                               DropdownButtonFormField(

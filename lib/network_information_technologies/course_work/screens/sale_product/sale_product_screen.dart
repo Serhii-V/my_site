@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_site/network_information_technologies/course_work/screens/sale_product/sale_product_bloc.dart';
 
+import '../../models/product.dart';
+
 class SaleProductScreen extends StatefulWidget {
   const SaleProductScreen({super.key, required this.bloc});
 
@@ -11,128 +13,132 @@ class SaleProductScreen extends StatefulWidget {
 }
 
 class _SaleProductScreenState extends State<SaleProductScreen> {
+  bool isCartView = false;
+  List<Product> products = [];
+  final List<Product> selectedProducts = [];
+
+  @override
+  void initState() {
+    widget.bloc.init();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Додати товар'),
-        backgroundColor: Colors.blueGrey[800],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.blueGrey.shade800, Colors.blueGrey.shade600],
-          ),
+        appBar: AppBar(
+          backgroundColor: Colors.blueGrey[800],
+          title: Text(isCartView ? "Обрані продукти" : "Список продуктів"),
+          actions: [
+            IconButton(
+              icon: Icon(isCartView ? Icons.list : Icons.shopping_cart),
+              onPressed: () {
+                setState(() {
+                  isCartView = !isCartView;
+                });
+              },
+            ),
+          ],
         ),
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width / 2,
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Назва товару',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    hintText: 'Введіть назву товару',
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Ціна',
-                    labelStyle: TextStyle(color: Colors.white),
-                    hintText: 'Введіть ціну',
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Кількість',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    hintText: 'Введіть кількість',
-                    hintStyle: TextStyle(color: Colors.grey[300]),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 30.0),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Text(
-                //       'Вжити до:  ${"${selectedDate.toLocal()}".split(' ')[0]}',
-                //       style: const TextStyle(color: Colors.white),
-                //     ),
-                //     ElevatedButton(
-                //       style: ElevatedButton.styleFrom(
-                //         backgroundColor: Colors.black26,
-                //         elevation: 5.0,
-                //       ),
-                //       onPressed: () => _selectDate(context),
-                //       child: const Text(
-                //         'Виберіть дату',
-                //         style: TextStyle(color: Colors.white),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 20.0),
-                // CheckboxListTile(
-                //   activeColor: Colors.white12,
-                //   title: const Text(
-                //     'Зберігається  холодильнику?',
-                //     style: TextStyle(
-                //       fontSize: 14,
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                //   value: isNeedCold,
-                //   onChanged: (value) {
-                //     setState(() {
-                //       isNeedCold = !isNeedCold;
-                //     });
-                //   },
-                // ),
-                const SizedBox(height: 50.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black26,
-                    elevation: 5.0,
-                  ),
-                  onPressed: () {
-                    // Додайте логіку для обробки натискання кнопки "Додати"
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.blueGrey.shade800, Colors.blueGrey.shade600],
+            ),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: isCartView ? buildCartView() : buildProductListView(),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Додати'),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Widget buildProductListView() {
+    return StreamBuilder<SaleProductState>(
+        stream: widget.bloc.blocState,
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return const SizedBox.shrink();
+          }
+          final products = snapshot.data!.products;
+          return ListView.builder(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 5,
+            ),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final currentProduct = products[index];
+              final selected = selectedProducts.contains(currentProduct);
+              return Card(
+                child: ListTile(
+                  onTap: () {
+                    setState(() {
+                      if (selected) {
+                        selectedProducts.remove(currentProduct);
+                      } else {
+                        selectedProducts.add(currentProduct);
+                      }
+                    });
                   },
-                  child: const Text('Додати'),
+                  title: Text(currentProduct.productName),
+                  tileColor: selected ? Colors.purple : Colors.black,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {},
+                      ),
+                      Text(currentProduct.balance.toString()),
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Widget buildCartView() {
+    return ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            title: Text(products[index].toString()),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {},
+                ),
+                Text("1"),
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {},
                 ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

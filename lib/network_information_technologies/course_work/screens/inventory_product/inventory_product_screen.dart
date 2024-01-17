@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'inventory_product_bloc.dart';
 
 class InventoryProductScreen extends StatefulWidget {
-  const InventoryProductScreen({super.key});
+  const InventoryProductScreen({super.key, required this.bloc});
+
+  final InventoryProductBloc bloc;
 
   @override
   State<InventoryProductScreen> createState() => _InventoryProductScreenState();

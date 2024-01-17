@@ -1,15 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:my_site/network_information_technologies/course_work/screens/add_product/add_product_bloc.dart';
+import '../course_work/screens/inventory_product/inventory_product_screen.dart';
+import '../course_work/screens/add_product/add_product_bloc.dart';
+import '../course_work/screens/inventory_product/inventory_product_bloc.dart';
+import '../course_work/screens/sale_product/sale_product_bloc.dart';
+import '../course_work/screens/sale_product/sale_product_screen.dart';
 
 import 'screens/add_product/add_product_screen.dart';
 
-class CourseWorkMainScreen extends StatelessWidget {
+class CourseWorkMainScreen extends StatefulWidget {
   const CourseWorkMainScreen({super.key});
 
   @override
+  State<StatefulWidget> createState() => CourseWorkMainScreenState();
+}
+
+class CourseWorkMainScreenState extends State<CourseWorkMainScreen> {
+  final AddProductBloc addProductBloc = AddProductBloc();
+  final SaleProductBloc saleProductBloc = SaleProductBloc();
+  final InventoryProductBloc inventoryProductBloc = InventoryProductBloc();
+
+
+  @override
+  void initState() {
+    addProductBloc.init();
+    saleProductBloc.init();
+    inventoryProductBloc.init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final AddProductBloc bloc = AddProductBloc();
-    bloc.init();
     return Scaffold(
       appBar: AppBar(
         title: const Text('КУРСОВА РОБОТА'),
@@ -38,7 +58,7 @@ class CourseWorkMainScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AddProductScreen(
-                              bloc: bloc,
+                              bloc: addProductBloc,
                             )),
                   );
                 },
@@ -51,11 +71,13 @@ class CourseWorkMainScreen extends StatelessWidget {
                   elevation: 5.0,
                 ),
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const SearchProductScreen()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SaleProductScreen(
+                              bloc: saleProductBloc,
+                            )),
+                  );
                 },
                 child: const Text('Видача товару'),
               ),
@@ -66,11 +88,11 @@ class CourseWorkMainScreen extends StatelessWidget {
                   elevation: 5.0,
                 ),
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const SearchProductScreen()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  InventoryProductScreen(bloc: inventoryProductBloc,)),
+                  );
                 },
                 child: const Text('Залишок товару'),
               ),

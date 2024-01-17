@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:my_site/network_information_technologies/course_work/modeles/categories.dart';
-import 'package:my_site/network_information_technologies/course_work/modeles/employee.dart';
-import 'package:my_site/network_information_technologies/course_work/modeles/product.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../../modeles/supplier.dart';
+import '../../models/supplier.dart';
+import '../../models/categories.dart';
+import '../../models/employee.dart';
+import '../../models/product.dart';
 
 class AddProductState {
   AddProductState(this.categories, this.suppliers, this.employees);
@@ -31,8 +30,14 @@ class AddProductBloc {
   }
 
   Future<void> addProductInToDB(Product product) async {
-    final parseProduct = product.getParseObject();
-    parseProduct.save();
+    final parseProduct = product.getAddProductParseObject();
+    final ParseResponse response = await parseProduct.save();
+    if (response.success) {
+      final parseObject = response.result;
+      final String objectId = parseObject.get('objectId');
+      final parseTransaction = product.getTransactionParseObject(objectId);
+      await parseTransaction.save();
+    }
   }
 
   Future<List<ParseObject>> getCategories() async {
@@ -67,13 +72,4 @@ class AddProductBloc {
       return [];
     }
   }
-
-  // Future<void> submitProduct({
-  //   required String productName,
-  //   required int quantity,
-  //   required String deliveredBy,
-  //   required String receivedBy,
-  // }) async {
-  //   await Future.delayed(Duration(seconds: 2));
-  // }
 }
