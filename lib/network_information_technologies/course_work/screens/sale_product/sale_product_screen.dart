@@ -60,6 +60,7 @@ class _SaleProductScreenState extends State<SaleProductScreen> {
                 },
                 child: const Text('Додати'),
               ),
+              const SizedBox(height: 30),
             ],
           ),
         ));
@@ -93,7 +94,7 @@ class _SaleProductScreenState extends State<SaleProductScreen> {
                     });
                   },
                   title: Text(currentProduct.productName),
-                  tileColor: selected ? Colors.purple : Colors.black,
+                  tileColor: selected ? Colors.purple : Colors.white,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -129,7 +130,7 @@ class _SaleProductScreenState extends State<SaleProductScreen> {
                   icon: const Icon(Icons.add),
                   onPressed: () {},
                 ),
-                Text("1"),
+                const Text("1"),
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () {},

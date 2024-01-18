@@ -34,6 +34,7 @@ dependencies:
   parse_server_sdk_flutter: ^7.0.0
   equatable: ^2.0.5
   rxdart: ^0.27.7
+  dcdg: ^4.1.0
 
 
 
